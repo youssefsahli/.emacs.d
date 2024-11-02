@@ -31,6 +31,8 @@
 
 (prefer-coding-system 'utf-8)
 
+(setq ring-bell-function 'ignore)
+
 (setq auth-sources '("~/.authinfo.gpg"))
 
 (setq custom-file (locate-user-emacs-file ".emacs-custom.el"))
@@ -38,8 +40,8 @@
   (make-empty-file custom-file))
 (load custom-file)
 
-(defconst user-cloud-dir (file-name-as-directory (getenv "CLOUD_DIR")))
-(defconst user-notes-dir (file-name-as-directory (concat user-cloud-dir "notes")))
+;; (defconst user-cloud-dir (file-name-as-directory (getenv "CLOUD_DIR")))
+(defconst user-notes-dir (file-name-as-directory "~/Projects/Thesis/notes/"))
 
 (setq gc-cons-threshold (* 50 1000 1000))
 
@@ -94,7 +96,8 @@
 
 (use-package vertico
   :init
-  (vertico-mode))
+  (vertico-mode)
+  (vertico-mouse-mode))
 
 (use-package savehist
   :init
@@ -347,7 +350,7 @@ default face height is set to 0.1 to hide regular prompt/contents"
       (auto-project))
      (dir user-emacs-directory)
      (dir user-notes-dir)
-     (dir (concat user-cloud-dir "lepisma.github.io/"))
+     ;; (dir (concat user-cloud-dir "lepisma.github.io/"))
      (auto-mode)))
   (bufler-reverse t))
 

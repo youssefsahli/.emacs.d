@@ -376,6 +376,15 @@ trying to fetch title."
   :config
   (setq llm-warn-on-nonfree nil))
 
+(use-package typst-ts-mode
+  :vc (:fetcher codeberg :repo meow_king/typst-ts-mode))
+
+(use-package ox-typst
+  :vc (:fetcher github :repo youssefsahli/ox-typst))
+
+(use-package visual-line-mode
+  :hook text-mode)
+
 (provide 'r-writing)
 
 ;;; r-writing.el ends here
