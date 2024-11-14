@@ -4,11 +4,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(safe-local-variable-values
-   '((citar-bibliography . "~/Projects/Thesis/bib/library.bib")
-     (org-cite-export-processors
-      (t typst))
-     (org-pandoc-options-for-typst
-      (standalone))
+   '((org-export-body-only . t)
+     (citar-bibliography . "~/Projects/Thesis/bib/library.bib")
+     (org-cite-export-processors (t typst))
+     (org-pandoc-options-for-typst (standalone))
      (typst-ts-compile-options . "--root ~/Projects/Thesis")
      (typst-ts-watch-options . "--root ~/Projects/Thesis"))))
 (custom-set-faces

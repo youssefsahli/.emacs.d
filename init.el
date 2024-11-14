@@ -1,7 +1,7 @@
 (setq package-enable-at-startup nil)
 (setq package-quickstart nil)
 
-(defvar elpaca-installer-version 0.7)
+(defvar elpaca-installer-version 0.8)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
@@ -30,7 +30,7 @@
 				       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
 		 ((require 'elpaca))
 		 ((elpaca-generate-autoloads "elpaca" repo)))
-	    (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+	    (progn (message "%s" (buxffer-string)) (kill-buffer buffer))
 	  (error "%s" (with-current-buffer buffer (buffer-string))))
       ((error) (warn "%s" err) (delete-directory repo 'recursive))))
   (unless (require 'elpaca-autoloads nil t)
@@ -48,10 +48,13 @@
 ;; (setq use-package-compute-statistics t)
 ;; (add-hook after-init-hook #'use-package-report)
 
-(setq use-package-always-defer t)
+(setq use-package-always-defer nil)
 
 (use-package gcmh
   :config (gcmh-mode 1))
+
+(use-package f)
+(elpaca-wait)
 
 (defun cycle (var lst)
   "Cycle the value of VAR through the list LST."
@@ -540,9 +543,27 @@
 
 (use-package elpher)
 
-(use-package gptel
-  :custom
-  (gptel-api-key (lambda () (f-read-text (expand-file-name "openai.key" user-emacs-directory)))))
+(defvar-local gptkey
+    (f-read-text (expand-file-name "openai.key" user-emacs-directory)))
+
+  (use-package gptel
+    :disabled
+    :custom
+    (gptel-api-key gptkey))
+
+  (use-package org-ai
+    :ensure t
+    :custom
+    (org-ai-openai-api-token gptkey)
+    (org-ai-default-chat-model "gpt-4o")
+    (org-ai-auto-fill t)
+    :commands (org-ai-mode
+               org-ai-global-mode)
+    :init
+    (add-hook 'org-mode-hook #'org-ai-mode) ; enable org-ai in org-mode
+    (org-ai-global-mode) ; installs global keybindings on C-c M-a
+    :config
+    (org-ai-install-yasnippets))
 
 (use-package dirvish
   :after nerd-icons
@@ -656,6 +677,14 @@
 
 (use-package org-glossary
   :ensure (:host github :repo "tecosaur/org-glossary")
+  :config
+  (org-glossary-set-export-spec 'typst t
+  :use                  "#link(label(\"gls%k\"))[%t] #label(\"glsr%K%r\")" 
+  :first-use 	 	  "%u" 
+  :definition  	  "/ %t: %v #label(\"gls%k\")"
+  :backref              "#link(label(\"glsr%K%r\"))[%r]"
+  :definition-structure "#bold[%d] %v %b")
+  
   :hook (org-mode . org-glossary-mode))
 
 (use-package org-modern
@@ -727,13 +756,8 @@
 
 (use-package ox-typst
   :after (org org-glossary)
-  :ensure (ox-typst :host github :repo "youssefsahli/ox-typst")
-  :config
-  (org-glossary-set-export-spec 'typst t
-    :use "#gls[%k]"
-    :first-use "#gls[%k]"
-    :definition "#register-glossary(entry-list)"
-    :definition-structure "(key: \"%k\", short: \"%t\", long: \"%v\", description: \"%b\")"))
+  :demand t
+  :ensure (ox-typst :host github :repo "youssefsahli/ox-typst"))
 
 (use-package rainbow-delimiters
   :custom
