@@ -679,11 +679,11 @@
   :ensure (:host github :repo "tecosaur/org-glossary")
   :config
   (org-glossary-set-export-spec 'typst t
-  :use                  "#link(label(\"gls%k\"))[%t] #label(\"glsr%K%r\")" 
-  :first-use 	 	  "%u" 
-  :definition  	  "/ %t: %v #label(\"gls%k\")"
-  :backref              "#link(label(\"glsr%K%r\"))[%r]"
-  :definition-structure "#bold[%d] %v %b")
+    :use                  "#link(label(\"gls%k\"))[%t] #label(\"glsr%K%r\")" 
+    :first-use            "%u" 
+    :definition           "/ %t: %v #label(\"gls%k\")"
+    :backref              ""
+    :definition-structure "#bold[%d] %v")
   
   :hook (org-mode . org-glossary-mode))
 
